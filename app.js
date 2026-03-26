@@ -6,6 +6,7 @@ const inputCotacao = document.querySelector("#cotacao");
 const btnAdicionar = document.querySelector("#btn-adicionar");
 const listaDespesasDOM = document.querySelector("#lista-despesas");
 const totalBrlDOM = document.querySelector("#total-brl");
+const inputDeletar = document.querySelector("#btn-deletar");
 
 let despesas = JSON.parse(localStorage.getItem("viagem_despesas")) || [];
 
@@ -23,7 +24,7 @@ const adicionarDespesa = () => {
 
   if (desc === "" || isNaN(valorOriginal) || isNaN(cotacao)) {
     alert(
-      "Por favor, preencha todos os campos corretamente com valores válidos."
+      "Por favor, preencha todos os campos corretamente com valores válidos.",
     );
     return;
   }
@@ -53,25 +54,55 @@ const atualizarTela = () => {
     return `
             <li>
                 <div> 
-                    <strong>${item.descricao}</strong><br>
-                
+                    <strong>${item.descricao}</strong> 
+                    <button class="btn-deletar" data-id="${item.id}">X</button>
+                    <br>
                     <small> U$ ${item.valorEstrangeiro.toFixed(2)} </small>
                 </div>
                 <span class="valor"> R$ ${item.valorReal.toFixed(2)} </span>
             </li>
-        `;
+            `;
   });
 
   
-  listaDespesasDOM.innerHTML = htmlDaLista.join('');
-
+  
+  listaDespesasDOM.innerHTML = htmlDaLista.join("");
+  
   let somaTotal = 0;
-
+  
   despesas.forEach((item) => {
     somaTotal += item.valorReal;
   });
-
+  
   totalBrlDOM.textContent = `R$ ${somaTotal.toFixed(2)}`;
 };
 
+
+
+listaDespesasDOM.addEventListener("click", (event) => {
+  if (event.target.classList.contains("btn-deletar")) {
+    const idParaDeletar = parseInt(event.target.dataset.id);
+    executarDelecao(idParaDeletar);
+  }
+});
+
+const executarDelecao = (id) => {
+  
+  for (let i = 0; i < despesas.length; i++) {
+    if (despesas[i].id === id) {
+      
+      despesas.splice(i, 1); 
+      break; 
+    }
+  }
+
+  
+  salvarDespesas(); 
+  atualizarTela();
+};
+
 atualizarTela();
+
+deletarDespesas();
+
+// console.log("O que tem dentro da lista:", listaDespesasDOM);
