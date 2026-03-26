@@ -12,6 +12,9 @@ body {
     padding: 20px;
 }
 
+.btn-deletar{
+    background-color: red;
+}
 
 .container {
     background: white;
